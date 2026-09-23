@@ -1,145 +1,41 @@
-
-import React from 'react';
-import { 
-  Card, 
-  CardContent 
-} from "@/components/ui/card";
-import { 
-  Label 
-} from "@/components/ui/label";
-import { 
-  Input 
-} from "@/components/ui/input";
-import { 
-  Textarea 
-} from "@/components/ui/textarea";
-import { 
-  Button 
-} from "@/components/ui/button";
-import { 
-  Mail, 
-  Linkedin, 
-  Facebook,
-  Send 
-} from 'lucide-react';
+import { useState } from "react";
+import { z } from "zod";
+import { Facebook, Linkedin, Loader2, Mail, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { SectionHeading } from "@/components/SectionHeading";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-const Contact = () => {
+const messageSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your name.").max(100),
+  email: z.string().trim().email("Please enter a valid email.").max(255),
+  phone: z.string().trim().max(40).optional(),
+  subject: z.string().trim().min(2, "Please enter a subject.").max(160),
+  message: z.string().trim().min(10, "Please add a little more detail.").max(2000),
+});
+
+export default function Contact() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { toast } = useToast();
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would normally handle the form submission with a backend
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. I'll get back to you soon!",
-    });
-    
-    // Reset form
-    const form = e.target as HTMLFormElement;
-    form.reset();
-  };
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setError("");
+    const form = event.currentTarget;
+    const values = Object.fromEntries(new FormData(form));
+    const parsed = messageSchema.safeParse(values);
+    if (!parsed.success) { setError(parsed.error.issues[0]?.message ?? "Please check your details."); return; }
+    setLoading(true);
+    const { error: submitError } = await supabase.from("messages").insert({ ...parsed.data, phone: parsed.data.phone || null });
+    setLoading(false);
+    if (submitError) { setError("Your message could not be sent. Please try again."); return; }
+    form.reset(); toast({ title: "Message received", description: "Thank you. Ahsan will get back to you soon." });
+  }
+  return <section id="contact" className="section-shell bg-muted/35"><div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-[.8fr_1.2fr] lg:px-8"><div><SectionHeading eyebrow="Contact" title="Let’s discuss your next project" copy="For travel operations, data support, websites or digital business needs, send a clear message below." /><div className="mt-9 space-y-4"><a className="contact-link" href="mailto:b.ahsanraza@gmail.com"><Mail />b.ahsanraza@gmail.com</a><a className="contact-link" href="https://www.linkedin.com/in/ahsan-raza-awan-/" target="_blank" rel="noopener noreferrer"><Linkedin />LinkedIn</a><a className="contact-link" href="https://www.facebook.com/ahsanrazaawan6/" target="_blank" rel="noopener noreferrer"><Facebook />Facebook</a></div></div>
+    <form onSubmit={submit} className="rounded-lg border border-border bg-card p-6 shadow-premium md:p-8" noValidate><div className="grid gap-5 sm:grid-cols-2"><Field label="Name" name="name" placeholder="Your name" /><Field label="Email" name="email" type="email" placeholder="you@example.com" /><Field label="Phone" name="phone" placeholder="Optional" /><Field label="Subject" name="subject" placeholder="How can I help?" /></div><div className="mt-5 space-y-2"><Label htmlFor="message">Message</Label><Textarea id="message" name="message" rows={6} maxLength={2000} placeholder="Tell me about your project or requirement..." required /></div>{error && <p className="mt-4 text-sm text-destructive" role="alert">{error}</p>}<Button type="submit" size="lg" className="mt-6 w-full sm:w-auto" disabled={loading}>{loading ? <><Loader2 className="animate-spin" />Sending…</> : <>Send Message <Send /></>}</Button></form>
+  </div></section>;
+}
 
-  return (
-    <section id="contact" className="section-padding bg-white">
-      <div className="container mx-auto">
-        <h2 className="section-title text-center">Get In Touch</h2>
-        <p className="section-subtitle text-center mx-auto">
-          Let's discuss how I can help with your next project
-        </p>
-        
-        <div className="flex flex-col lg:flex-row gap-12 mt-12">
-          <div className="w-full lg:w-1/2 animate-slideUp">
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
-                
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-brand-light p-3 rounded-full">
-                      <Mail className="text-brand-blue" size={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium mb-1">Email</h4>
-                      <a 
-                        href="mailto:b.ahsanraza@gmail.com" 
-                        className="text-muted-foreground hover:text-brand-blue transition-colors"
-                      >
-                        b.ahsanraza@gmail.com
-                      </a>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="bg-brand-light p-3 rounded-full">
-                      <Linkedin className="text-brand-blue" size={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium mb-1">LinkedIn</h4>
-                      <a 
-                        href="https://www.linkedin.com/in/ahsan-raza-awan-/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="text-muted-foreground hover:text-brand-blue transition-colors"
-                      >
-                        linkedin.com/in/ahsan-raza-awan-
-                      </a>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <div className="bg-brand-light p-3 rounded-full">
-                      <Facebook className="text-brand-blue" size={24} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium mb-1">Facebook</h4>
-                      <a 
-                        href="https://www.facebook.com/ahsanrazaawan6/" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="text-muted-foreground hover:text-brand-blue transition-colors"
-                      >
-                        facebook.com/ahsanrazaawan6
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="w-full lg:w-1/2 animate-slideUp" style={{animationDelay: "0.2s"}}>
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
-                
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your Name" required />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Your Email" required />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" placeholder="How can I help you?" rows={5} required />
-                  </div>
-                  
-                  <Button type="submit" className="w-full">
-                    <Send size={18} className="mr-2" /> Send Message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default Contact;
+function Field({ label, name, type = "text", placeholder }: { label: string; name: string; type?: string; placeholder: string }) { return <div className="space-y-2"><Label htmlFor={name}>{label}</Label><Input id={name} name={name} type={type} placeholder={placeholder} maxLength={type === "email" ? 255 : 160} required={name !== "phone"} /></div>; }
