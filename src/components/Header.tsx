@@ -1,66 +1,31 @@
-
-import React, { useEffect, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { navItems } from "@/data/portfolio";
+import { cn } from "@/lib/utils";
 
-const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
   return (
-    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white shadow-md py-4' : 'bg-transparent py-6'
-    }`}>
-      <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
-        <a href="#hero" className="text-xl font-bold text-brand-blue">AR</a>
-        
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <a href="#about" className="text-sm font-medium hover:text-brand-blue transition-colors">About</a>
-          <a href="#experience" className="text-sm font-medium hover:text-brand-blue transition-colors">Experience</a>
-          <a href="#skills" className="text-sm font-medium hover:text-brand-blue transition-colors">Skills</a>
-          <a href="#portfolio" className="text-sm font-medium hover:text-brand-blue transition-colors">Portfolio</a>
-          <a href="#contact" className="text-sm font-medium hover:text-brand-blue transition-colors">Contact</a>
-          <Button size="sm" asChild>
-            <a href="#contact">Hire Me</a>
-          </Button>
+    <header className={cn("fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all", scrolled && "border-border/70 bg-background/90 shadow-sm backdrop-blur-xl")}>
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+        <a href="#home" className="flex items-center gap-3" aria-label="Ahsan Raza home">
+          <span className="grid h-10 w-10 place-items-center rounded-md bg-primary font-display text-sm font-bold text-primary-foreground">AR</span>
+          <span className={cn("hidden text-sm font-semibold sm:block", scrolled ? "text-foreground" : "text-primary-foreground")}>Ahsan Raza</span>
+        </a>
+        <nav className="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
+          {navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} className={cn("text-xs font-semibold transition-colors hover:text-primary", scrolled ? "text-muted-foreground" : "text-primary-foreground/75")}>{item}</a>)}
         </nav>
-
-        {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden text-brand-dark"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="hidden lg:block"><Button asChild size="sm"><a href="#contact">Let's Work Together</a></Button></div>
+        <Button variant="ghost" size="icon" className={cn("lg:hidden", !scrolled && "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground")} onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"}>{open ? <X /> : <Menu />}</Button>
       </div>
-      
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <nav className="md:hidden bg-white py-4 px-4 absolute w-full shadow-md">
-          <div className="flex flex-col space-y-4">
-            <a href="#about" className="text-sm font-medium hover:text-brand-blue transition-colors" onClick={() => setIsMenuOpen(false)}>About</a>
-            <a href="#experience" className="text-sm font-medium hover:text-brand-blue transition-colors" onClick={() => setIsMenuOpen(false)}>Experience</a>
-            <a href="#skills" className="text-sm font-medium hover:text-brand-blue transition-colors" onClick={() => setIsMenuOpen(false)}>Skills</a>
-            <a href="#portfolio" className="text-sm font-medium hover:text-brand-blue transition-colors" onClick={() => setIsMenuOpen(false)}>Portfolio</a>
-            <a href="#contact" className="text-sm font-medium hover:text-brand-blue transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</a>
-            <Button size="sm" className="w-full" asChild onClick={() => setIsMenuOpen(false)}>
-              <a href="#contact">Hire Me</a>
-            </Button>
-          </div>
-        </nav>
-      )}
+      {open && <nav className="border-t border-border bg-background px-5 py-5 lg:hidden" aria-label="Mobile navigation"><div className="mx-auto grid max-w-7xl gap-1">{navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setOpen(false)} className="rounded-md px-3 py-3 text-sm font-medium hover:bg-muted">{item}</a>)}<Button className="mt-3" asChild><a href="#contact" onClick={() => setOpen(false)}>Let's Work Together</a></Button></div></nav>}
     </header>
   );
-};
-
-export default Header;
+}
