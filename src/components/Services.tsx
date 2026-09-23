@@ -1,0 +1,6 @@
+import { SectionHeading } from "@/components/SectionHeading";
+import { services } from "@/data/portfolio";
+
+export default function Services() {
+  return <section id="services" className="section-shell bg-primary text-primary-foreground"><div className="mx-auto max-w-7xl px-5 lg:px-8"><SectionHeading light eyebrow="How I can help" title="Professional services" copy="Focused support for travel operations, data workflows and digital business needs." /><div className="mt-12 grid gap-px overflow-hidden rounded-lg border border-primary-foreground/10 bg-primary-foreground/10 sm:grid-cols-2 lg:grid-cols-3">{services.map(({ icon: Icon, title, description }) => <article key={title} className="group bg-primary p-7 transition-colors hover:bg-primary-foreground/5"><Icon className="h-7 w-7 text-highlight transition-transform group-hover:-translate-y-1" /><h3 className="mt-6 text-lg font-semibold">{title}</h3><p className="mt-3 text-sm leading-6 text-primary-foreground/65">{description}</p></article>)}</div></div></section>;
+}
