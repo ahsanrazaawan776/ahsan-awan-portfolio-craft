@@ -28,7 +28,8 @@ export default function Contact() {
     const parsed = messageSchema.safeParse(values);
     if (!parsed.success) { setError(parsed.error.issues[0]?.message ?? "Please check your details."); return; }
     setLoading(true);
-    const { error: submitError } = await supabase.from("messages").insert({ ...parsed.data, phone: parsed.data.phone || null });
+    const { name, email, phone, subject, message } = parsed.data;
+    const { error: submitError } = await supabase.from("messages").insert({ name, email, phone: phone || null, subject, message });
     setLoading(false);
     if (submitError) { setError("Your message could not be sent. Please try again."); return; }
     form.reset(); toast({ title: "Message received", description: "Thank you. Ahsan will get back to you soon." });
