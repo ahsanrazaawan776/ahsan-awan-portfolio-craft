@@ -1,0 +1,40 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Award, BriefcaseBusiness, FolderKanban, GraduationCap, LayoutDashboard, Loader2, LogOut, Mail, Settings, Sparkles, Wrench } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
+
+const sections = [
+  { label: "Dashboard", icon: LayoutDashboard }, { label: "Projects", icon: FolderKanban }, { label: "Experience", icon: BriefcaseBusiness },
+  { label: "Skills", icon: Sparkles }, { label: "Services", icon: Wrench }, { label: "Education", icon: GraduationCap },
+  { label: "Certifications", icon: Award }, { label: "Messages", icon: Mail }, { label: "Site Settings", icon: Settings },
+];
+
+export default function Admin() {
+  const [user, setUser] = useState<User | null>(null);
+  const [checking, setChecking] = useState(true);
+  const [active, setActive] = useState("Dashboard");
+  const navigate = useNavigate();
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => { setUser(data.user); setChecking(false); });
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
+    return () => data.subscription.unsubscribe();
+  }, []);
+  if (checking) return <div className="grid min-h-screen place-items-center bg-muted"><Loader2 className="animate-spin text-primary" /></div>;
+  if (!user) return <AdminLogin />;
+  return <div className="min-h-screen bg-muted/40 lg:grid lg:grid-cols-[260px_1fr]">
+    <aside className="border-b border-border bg-primary p-6 text-primary-foreground lg:min-h-screen lg:border-b-0"><a href="/" className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-md bg-highlight font-bold text-highlight-foreground">AR</span><div><p className="font-semibold">Portfolio Admin</p><p className="text-xs text-primary-foreground/50">Ahsan Raza</p></div></a><nav className="mt-8 grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-1">{sections.map(({ label, icon: Icon }) => <Button key={label} variant="ghostLight" className={`justify-start ${active === label ? "bg-primary-foreground/10" : ""}`} onClick={() => setActive(label)}><Icon />{label}</Button>)}</nav><Button variant="ghostLight" className="mt-8 w-full justify-start" onClick={async () => { await supabase.auth.signOut(); navigate("/"); }}><LogOut />Sign out</Button></aside>
+    <main className="p-5 md:p-10"><div className="mx-auto max-w-6xl"><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Secure workspace</p><h1 className="mt-2 text-3xl font-semibold">{active}</h1><p className="mt-2 text-sm text-muted-foreground">Manage verified portfolio content without editing the public site.</p><div className="mt-8 rounded-lg border border-border bg-card p-8 shadow-sm"><h2 className="text-lg font-semibold">{active} management</h2><p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">The protected data structure for this area is ready. Add, edit, search, filter and publish controls can be connected for approved administrators once your account receives the admin role.</p><div className="mt-6 flex flex-wrap gap-3"><Button disabled>Add new</Button><Button variant="outline" disabled>Search & filter</Button></div></div></div></main>
+  </div>;
+}
+
+function AdminLogin() {
+  const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [mode, setMode] = useState<"signin" | "signup">("signin"); const [loading, setLoading] = useState(false); const [message, setMessage] = useState("");
+  async function emailAuth(event: React.FormEvent) { event.preventDefault(); setLoading(true); setMessage(""); const result = mode === "signin" ? await supabase.auth.signInWithPassword({ email, password }) : await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin + "/admin" } }); setLoading(false); if (result.error) setMessage(result.error.message); else if (mode === "signup" && !result.data.session) setMessage("Check your email to confirm your account, then return here to sign in."); }
+  async function googleAuth() { setLoading(true); const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin }); if (result.error) { setMessage(result.error.message); setLoading(false); } }
+  return <main className="grid min-h-screen place-items-center bg-primary px-5 py-12"><div className="w-full max-w-md rounded-lg border border-primary-foreground/10 bg-background p-7 shadow-glass"><a href="/" className="inline-flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-md bg-primary font-bold text-primary-foreground">AR</span><span className="font-semibold">Portfolio Admin</span></a><h1 className="mt-8 text-3xl font-semibold">{mode === "signin" ? "Welcome back" : "Create your account"}</h1><p className="mt-2 text-sm text-muted-foreground">Secure access for portfolio management.</p><Button variant="outline" className="mt-7 w-full" onClick={googleAuth} disabled={loading}>Continue with Google</Button><div className="my-6 flex items-center gap-3 text-xs text-muted-foreground"><span className="h-px flex-1 bg-border" />or use email<span className="h-px flex-1 bg-border" /></div><form onSubmit={emailAuth} className="space-y-4"><div className="space-y-2"><Label htmlFor="admin-email">Email</Label><Input id="admin-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div><div className="space-y-2"><Label htmlFor="admin-password">Password</Label><Input id="admin-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} minLength={8} required /></div>{message && <p className="text-sm text-muted-foreground" role="status">{message}</p>}<Button className="w-full" disabled={loading}>{loading && <Loader2 className="animate-spin" />}{mode === "signin" ? "Sign in" : "Create account"}</Button></form><button type="button" className="mt-5 w-full text-center text-sm text-primary hover:underline" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setMessage(""); }}>{mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}</button><a href="/" className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground">Return to portfolio</a></div></main>;
+}
