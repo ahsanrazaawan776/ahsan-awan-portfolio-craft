@@ -1,61 +1,6 @@
+import { Facebook, Linkedin, Mail } from "lucide-react";
 
-import React from 'react';
-import { Linkedin, Facebook, Mail } from 'lucide-react';
-
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
-  
-  return (
-    <footer className="bg-brand-light py-12 px-6">
-      <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-6 md:mb-0">
-            <h2 className="text-2xl font-bold text-brand-blue">Ahsan Raza Awan</h2>
-            <p className="text-muted-foreground mt-2">Digital Marketer | Graphic Designer | Business Owner</p>
-          </div>
-          
-          <div className="flex gap-4">
-            <a 
-              href="mailto:b.ahsanraza@gmail.com" 
-              className="bg-white p-3 rounded-full text-brand-blue hover:bg-brand-blue hover:text-white transition-colors"
-              aria-label="Email"
-            >
-              <Mail size={20} />
-            </a>
-            <a 
-              href="https://www.linkedin.com/in/ahsan-raza-awan-/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="bg-white p-3 rounded-full text-brand-blue hover:bg-brand-blue hover:text-white transition-colors"
-              aria-label="LinkedIn"
-            >
-              <Linkedin size={20} />
-            </a>
-            <a 
-              href="https://www.facebook.com/ahsanrazaawan6/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="bg-white p-3 rounded-full text-brand-blue hover:bg-brand-blue hover:text-white transition-colors"
-              aria-label="Facebook"
-            >
-              <Facebook size={20} />
-            </a>
-          </div>
-        </div>
-        
-        <div className="border-t border-gray-200 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm mb-4 md:mb-0">
-            &copy; {currentYear} Ahsan Raza Awan. All rights reserved.
-          </p>
-          
-          <div className="flex gap-6">
-            <a href="#" className="text-sm text-muted-foreground hover:text-brand-blue transition-colors">Privacy Policy</a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-brand-blue transition-colors">Terms of Service</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-};
-
-export default Footer;
+export default function Footer() {
+  return <footer className="bg-primary py-12 text-primary-foreground"><div className="mx-auto max-w-7xl px-5 lg:px-8"><div className="flex flex-col justify-between gap-8 md:flex-row md:items-end"><div><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-md bg-highlight text-sm font-bold text-highlight-foreground">AR</span><h2 className="text-xl font-semibold">Ahsan Raza</h2></div><p className="mt-4 max-w-md text-sm text-primary-foreground/60">Travel & Tours Professional with additional capability across digital, web, data and business operations.</p></div><div className="flex gap-3"><Social href="mailto:b.ahsanraza@gmail.com" label="Email"><Mail /></Social><Social href="https://www.linkedin.com/in/ahsan-raza-awan-/" label="LinkedIn"><Linkedin /></Social><Social href="https://www.facebook.com/ahsanrazaawan6/" label="Facebook"><Facebook /></Social></div></div><div className="mt-10 flex flex-col justify-between gap-3 border-t border-primary-foreground/10 pt-6 text-xs text-primary-foreground/45 sm:flex-row"><p>© {new Date().getFullYear()} Ahsan Raza. All rights reserved.</p><a href="/admin" className="hover:text-primary-foreground">Admin</a></div></div></footer>;
+}
+function Social({ href, label, children }: { href: string; label: string; children: React.ReactNode }) { return <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" aria-label={label} className="grid h-10 w-10 place-items-center rounded-md border border-primary-foreground/15 text-primary-foreground/65 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground">{children}</a>; }

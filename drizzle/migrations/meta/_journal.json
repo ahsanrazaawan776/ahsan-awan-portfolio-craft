@@ -8,6 +8,13 @@
       "when": 1790141740733,
       "tag": "0000_create_portfolio_platform",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790270579973,
+      "tag": "0001_secure_admin_role_helper",
+      "breakpoints": true
     }
   ]
 }
