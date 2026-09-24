@@ -5,7 +5,7 @@ import heroImage from "@/assets/travel-hero.jpg";
 export default function Hero() {
   return (
     <section id="home" className="relative min-h-[92vh] overflow-hidden bg-hero pt-20 text-primary-foreground">
-      <img src={heroImage} alt="Travel documents and airport operations setting" width={1600} height={1000} className="absolute inset-0 h-full w-full object-cover opacity-35" fetchPriority="high" />
+      <img src={heroImage} alt="Travel documents and airport operations setting" width={1600} height={1000} className="absolute inset-0 h-full w-full object-cover opacity-35" />
       <div className="absolute inset-0 bg-hero-overlay" />
       <div className="relative mx-auto grid min-h-[calc(92vh-5rem)] max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-[1.15fr_.85fr] lg:px-8">
         <div className="animate-reveal">
