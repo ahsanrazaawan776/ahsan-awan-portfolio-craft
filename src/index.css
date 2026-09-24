@@ -1,85 +1,39 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 224 71% 4%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 224 71% 4%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 4%;
-
-    --primary: 211 85% 15%;
-    --primary-foreground: 210 20% 98%;
-
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 211 85% 15%;
-
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 8% 46%;
-
-    --accent: 220 14% 96%;
-    --accent-foreground: 211 85% 15%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 20% 98%;
-
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 211 85% 15%;
-
-    --radius: 0.5rem;
-
+    --background: 42 25% 98%; --foreground: 170 25% 10%;
+    --card: 0 0% 100%; --card-foreground: 170 25% 10%;
+    --popover: 0 0% 100%; --popover-foreground: 170 25% 10%;
+    --primary: 169 50% 15%; --primary-foreground: 42 25% 98%;
+    --secondary: 166 19% 92%; --secondary-foreground: 169 50% 15%;
+    --muted: 45 16% 94%; --muted-foreground: 168 8% 42%;
+    --accent: 42 72% 57%; --accent-foreground: 169 50% 10%;
+    --highlight: 42 72% 57%; --highlight-foreground: 169 50% 10%;
+    --destructive: 0 70% 45%; --destructive-foreground: 0 0% 100%;
+    --border: 160 10% 84%; --input: 160 10% 84%; --ring: 169 50% 25%;
+    --radius: .45rem;
+    --hero: linear-gradient(118deg, hsl(170 40% 7%) 0%, hsl(169 48% 12%) 55%, hsl(173 34% 18%) 100%);
+    --hero-overlay: linear-gradient(90deg, hsl(170 40% 6% / .96) 0%, hsl(169 45% 9% / .76) 52%, hsl(169 45% 9% / .34) 100%);
+    --shadow-premium: 0 24px 60px -35px hsl(169 50% 10% / .45);
+    --shadow-glass: 0 30px 80px -25px hsl(170 60% 4% / .65);
     scroll-behavior: smooth;
   }
-
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-body;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-medium;
-  }
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground font-sans antialiased; letter-spacing: 0; }
+  h1, h2, h3, h4 { @apply font-display; letter-spacing: 0; }
+  ::selection { @apply bg-highlight text-highlight-foreground; }
+  :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
 }
 
 @layer components {
-  .section-padding {
-    @apply py-20 px-6 md:px-12 lg:px-24;
-  }
-  
-  .section-title {
-    @apply text-3xl md:text-4xl font-bold text-brand-blue mb-8;
-  }
+  .section-shell { @apply py-20 md:py-28; }
+  .contact-link { @apply flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-primary; }
+  .contact-link svg { @apply h-5 w-5 text-primary; }
+}
 
-  .section-subtitle {
-    @apply text-xl text-muted-foreground mb-12 max-w-2xl;
-  }
-  
-  .skill-tag {
-    @apply px-4 py-2 bg-brand-light border border-brand-gray rounded-full text-sm font-medium transition-all hover:bg-brand-blue hover:text-white;
-  }
-  
-  .timeline-item {
-    @apply relative pl-8 pb-12 border-l border-brand-gray;
-  }
-  
-  .timeline-item:before {
-    content: "";
-    @apply absolute -left-[5px] top-0 h-2.5 w-2.5 bg-brand-blue rounded-full;
-  }
-  
-  .timeline-item:last-child {
-    @apply border-0;
-  }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

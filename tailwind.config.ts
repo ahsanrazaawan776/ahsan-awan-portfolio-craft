@@ -45,6 +45,10 @@ export default {
 					DEFAULT: 'hsl(var(--accent))',
 					foreground: 'hsl(var(--accent-foreground))'
 				},
+				highlight: {
+					DEFAULT: 'hsl(var(--highlight))',
+					foreground: 'hsl(var(--highlight-foreground))'
+				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
 					foreground: 'hsl(var(--popover-foreground))'
@@ -53,14 +57,9 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Custom colors
-				brand: {
-					blue: "#0A2540",
-					light: "#F8F9FA",
-					gray: "#DEE2E6",
-					dark: "#333333",
-				},
 			},
+			backgroundImage: { hero: 'var(--hero)', 'hero-overlay': 'var(--hero-overlay)' },
+			boxShadow: { premium: 'var(--shadow-premium)', glass: 'var(--shadow-glass)' },
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -79,6 +78,8 @@ export default {
 					'0%': { opacity: '0' },
 					'100%': { opacity: '1' }
 				},
+				float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-12px)' } },
+				reveal: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
 				slideUp: {
 					'0%': { transform: 'translateY(100px)', opacity: '0' },
 					'100%': { transform: 'translateY(0)', opacity: '1' }
@@ -94,10 +95,13 @@ export default {
 				"fadeIn": "fadeIn 1s ease-in-out",
 				"slideUp": "slideUp 0.5s ease-out",
 				"slideRight": "slideRight 0.5s ease-out"
+				,"float": "float 6s ease-in-out infinite"
+				,"float-delayed": "float 7s ease-in-out 1.2s infinite"
+				,"reveal": "reveal .8s ease-out both"
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				body: ['Roboto', 'sans-serif'],
+				sans: ['Manrope', 'sans-serif'],
+				display: ['DM Serif Display', 'serif'],
 			},
 		},
 	},
